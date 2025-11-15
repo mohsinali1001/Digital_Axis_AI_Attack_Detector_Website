@@ -1,5 +1,6 @@
 import React from "react";
-import { Send, Mail, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Send, Mail, MapPin, Instagram } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,12 +23,15 @@ const Footer = () => {
             
             {/* Contact icons */}
             <div className="mt-6 space-y-3 text-base"> {/* INCREASED */}
+                <a href="mailto:team.digitalaxis@gmail.com" className="flex items-center text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
+                    <Mail size={18} className="mr-3 text-blue-500" /> team.digitalaxis@gmail.com
+                </a>
                 <p className="flex items-center text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
-                    <Mail size={18} className="mr-3 text-blue-500" /> support@digitalaxis.com
+                    <MapPin size={18} className="mr-3 text-blue-500" /> Attock, Pakistan
                 </p>
-                <p className="flex items-center text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
-                    <MapPin size={18} className="mr-3 text-blue-500" /> San Francisco, CA
-                </p>
+                <a href="https://instagram.com/team.digital.axis" target="_blank" rel="noopener noreferrer" className="flex items-center text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
+                    <Instagram size={18} className="mr-3 text-blue-500" /> team.digital.axis
+                </a>
             </div>
           </div>
 
@@ -35,11 +39,21 @@ const Footer = () => {
           <div>
             <h3 className="text-2xl font-bold mb-4 text-white border-b border-blue-400/50 pb-1">Quick Links</h3> {/* INCREASED TITLE */}
             <ul className="space-y-3 text-gray-400 text-lg"> {/* INCREASED LINK TEXT */}
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Home</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Features</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">How It Works</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Support</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Login</li>
+              <li>
+                <Link to="/" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Home</Link>
+              </li>
+              <li>
+                <a href="#features" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Features</a>
+              </li>
+              <li>
+                <a href="#how-it-works" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">How It Works</a>
+              </li>
+              <li>
+                <a href="#contact" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Support</a>
+              </li>
+              <li>
+                <Link to="/login" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Login</Link>
+              </li>
             </ul>
           </div>
 
@@ -50,7 +64,9 @@ const Footer = () => {
               <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Documentation</li>
               <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Blog</li>
               <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Case Studies</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Privacy Policy</li>
+              <li>
+                <Link to="/privacy" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Privacy Policy</Link>
+              </li>
             </ul>
           </div>
 
