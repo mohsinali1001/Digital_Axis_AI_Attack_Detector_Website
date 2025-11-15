@@ -75,9 +75,15 @@ const Footer = () => {
           <div>
             <h3 className="text-2xl font-bold mb-4 text-white border-b border-blue-400/50 pb-1">Resources</h3> {/* INCREASED TITLE */}
             <ul className="space-y-3 text-gray-400 text-lg"> {/* INCREASED LINK TEXT */}
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Documentation</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Blog</li>
-              <li className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Case Studies</li>
+              <li>
+                <Link to="/documentation" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Documentation</Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Blog</Link>
+              </li>
+              <li>
+                <Link to="/case-studies" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Case Studies</Link>
+              </li>
               <li>
                 <Link to="/privacy" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Privacy Policy</Link>
               </li>
