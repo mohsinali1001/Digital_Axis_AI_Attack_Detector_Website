@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 /* optional: small default to verify Tailwind loaded */
-body {
-  @apply bg-white text-gray-900;
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }

@@ -18,7 +18,7 @@ const Features = () => {
   ];
 
   return (
-    <section className="w-full bg-gray-900 py-24 transition-colors duration-300">
+    <section id="features" className="w-full bg-gray-900 py-24 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 text-center">
         
         {/* Section Header */}
