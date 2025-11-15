@@ -1,9 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Send, Mail, MapPin, Instagram } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 100);
+    }
+  };
 
   return (
     <footer id="contact" className="w-full bg-gray-950 text-gray-300 py-20 transition-colors duration-300">
@@ -40,7 +54,7 @@ const Footer = () => {
             <h3 className="text-2xl font-bold mb-4 text-white border-b border-blue-400/50 pb-1">Quick Links</h3> {/* INCREASED TITLE */}
             <ul className="space-y-3 text-gray-400 text-lg"> {/* INCREASED LINK TEXT */}
               <li>
-                <Link to="/" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Home</Link>
+                <a href="/" onClick={handleHomeClick} className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Home</a>
               </li>
               <li>
                 <a href="#features" className="hover:text-blue-400 transition-colors duration-200 cursor-pointer">Features</a>
