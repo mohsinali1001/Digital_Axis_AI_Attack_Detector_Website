@@ -20,6 +20,20 @@ const itemVariants = {
 // --- End Framer Motion Variants ---
 
 const HeroSection = () => {
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const scrollToContact = () => {
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
   return (
     <section className="relative w-full bg-gray-950 pt-40 pb-28 min-h-screen flex items-center 
                         overflow-hidden 
@@ -71,10 +85,16 @@ const HeroSection = () => {
             className="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start" // <-- NEW: justify-center for mobile, md:justify-start for desktop
             variants={itemVariants}
           >
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-all duration-300 transform hover:scale-[1.02]">
+            <button 
+              onClick={scrollToFeatures}
+              className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-all duration-300 transform hover:scale-[1.02] cursor-pointer"
+            >
               Explore Features
             </button>
-            <button className="border-2 border-gray-500 text-gray-300 px-8 py-3 rounded-full font-semibold text-lg hover:border-blue-500 hover:text-blue-500 transition-all duration-300">
+            <button 
+              onClick={scrollToContact}
+              className="border-2 border-gray-500 text-gray-300 px-8 py-3 rounded-full font-semibold text-lg hover:border-blue-500 hover:text-blue-500 transition-all duration-300 cursor-pointer"
+            >
               Learn More
             </button>
           </motion.div>
