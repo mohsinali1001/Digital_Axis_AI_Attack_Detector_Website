@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserPlus, Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import AuthLayout from "./AuthLayout";
 import PageHead from "../PageHead/PageHead";
+import API from "../../api/api";
+import { useToast } from "../Toast/Toast";
 
 const SignUp = () => {
+  const navigate = useNavigate();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,41 +22,27 @@ const SignUp = () => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    // Clear error when user starts typing
+    setFormData({ ...formData, [e.target.name]: e.target.value });
     if (errors[e.target.name]) {
-      setErrors({
-        ...errors,
-        [e.target.name]: "",
-      });
+      setErrors({ ...errors, [e.target.name]: "" });
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required";
-    }
+    if (!formData.name.trim()) newErrors.name = "Name is required";
 
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    if (!formData.email.trim()) newErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "Email is invalid";
-    }
 
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 8) {
+    if (!formData.password) newErrors.password = "Password is required";
+    else if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
-    }
 
-    if (formData.password !== formData.confirmPassword) {
+    if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -60,30 +50,35 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
+
+    if (!validateForm()) return;
 
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+
+    try {
+      await API.post("/auth/signup", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      toast.success("Signup successful! You can now login.");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500); // Small delay to show the toast before navigation
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || "Signup failed. Please try again."
+      );
+      console.error(err);
+    } finally {
       setIsLoading(false);
-      // Navigate to login or dashboard after successful signup
-      // navigate("/login");
-      console.log("Signup attempt:", formData);
-    }, 1000);
+    }
   };
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
 
   const itemVariants = {
@@ -107,7 +102,10 @@ const SignUp = () => {
         >
           {/* Name Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Full Name
             </label>
             <div className="relative">
@@ -119,13 +117,13 @@ const SignUp = () => {
                 name="name"
                 type="text"
                 autoComplete="name"
-                required
                 value={formData.name}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-3 bg-gray-800 border rounded-lg 
-                         text-white placeholder-gray-500 focus:outline-none focus:ring-2 
-                         focus:border-transparent transition-all duration-200
-                         ${errors.name ? "border-red-500 focus:ring-red-500" : "border-gray-700 focus:ring-blue-500"}`}
+                className={`block w-full pl-10 pr-3 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 ${
+                  errors.name
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-700 focus:ring-blue-500"
+                }`}
                 placeholder="John Doe"
               />
             </div>
@@ -136,7 +134,10 @@ const SignUp = () => {
 
           {/* Email Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -148,13 +149,13 @@ const SignUp = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                required
                 value={formData.email}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-3 py-3 bg-gray-800 border rounded-lg 
-                         text-white placeholder-gray-500 focus:outline-none focus:ring-2 
-                         focus:border-transparent transition-all duration-200
-                         ${errors.email ? "border-red-500 focus:ring-red-500" : "border-gray-700 focus:ring-blue-500"}`}
+                className={`block w-full pl-10 pr-3 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 ${
+                  errors.email
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-700 focus:ring-blue-500"
+                }`}
                 placeholder="you@example.com"
               />
             </div>
@@ -165,7 +166,10 @@ const SignUp = () => {
 
           {/* Password Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -177,13 +181,13 @@ const SignUp = () => {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="new-password"
-                required
                 value={formData.password}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-10 py-3 bg-gray-800 border rounded-lg 
-                         text-white placeholder-gray-500 focus:outline-none focus:ring-2 
-                         focus:border-transparent transition-all duration-200
-                         ${errors.password ? "border-red-500 focus:ring-red-500" : "border-gray-700 focus:ring-blue-500"}`}
+                className={`block w-full pl-10 pr-10 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 ${
+                  errors.password
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-700 focus:ring-blue-500"
+                }`}
                 placeholder="At least 8 characters"
               />
               <button
@@ -201,7 +205,10 @@ const SignUp = () => {
 
           {/* Confirm Password Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Confirm Password
             </label>
             <div className="relative">
@@ -213,13 +220,13 @@ const SignUp = () => {
                 name="confirmPassword"
                 type={showConfirmPassword ? "text" : "password"}
                 autoComplete="new-password"
-                required
                 value={formData.confirmPassword}
                 onChange={handleChange}
-                className={`block w-full pl-10 pr-10 py-3 bg-gray-800 border rounded-lg 
-                         text-white placeholder-gray-500 focus:outline-none focus:ring-2 
-                         focus:border-transparent transition-all duration-200
-                         ${errors.confirmPassword ? "border-red-500 focus:ring-red-500" : "border-gray-700 focus:ring-blue-500"}`}
+                className={`block w-full pl-10 pr-10 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:border-transparent transition-all duration-200 ${
+                  errors.confirmPassword
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-700 focus:ring-blue-500"
+                }`}
                 placeholder="Confirm your password"
               />
               <button
@@ -231,40 +238,46 @@ const SignUp = () => {
               </button>
             </div>
             {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
+              <p className="mt-1 text-sm text-red-400">
+                {errors.confirmPassword}
+              </p>
             )}
           </motion.div>
 
-          {/* Terms & Conditions */}
-          <motion.div variants={itemVariants} className="flex items-start">
-            <input
-              id="terms"
-              name="terms"
-              type="checkbox"
-              required
-              className="h-4 w-4 mt-1 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800"
-            />
-            <label htmlFor="terms" className="ml-2 block text-sm text-gray-300">
-              I agree to the{" "}
-              <Link to="/terms" className="text-blue-400 hover:text-blue-300 transition-colors">
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link to="/privacy" className="text-blue-400 hover:text-blue-300 transition-colors">
-                Privacy Policy
-              </Link>
-            </label>
-          </motion.div>
-
-          {/* Submit Button */}
-          <motion.div variants={itemVariants}>
+          {/* Terms & Submit */}
+          <motion.div variants={itemVariants} className="flex flex-col gap-3">
+            <div className="flex items-start">
+              <input
+                id="terms"
+                name="terms"
+                type="checkbox"
+                required
+                className="h-4 w-4 mt-1 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800"
+              />
+              <label
+                htmlFor="terms"
+                className="ml-2 block text-sm text-gray-300"
+              >
+                I agree to the{" "}
+                <Link
+                  to="/terms"
+                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  to="/privacy"
+                  className="text-blue-400 hover:text-blue-300 transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </label>
+            </div>
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 
-                       rounded-lg font-semibold shadow-lg shadow-blue-600/30 hover:bg-blue-700 
-                       transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 
-                       disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold shadow-lg shadow-blue-600/30 hover:bg-blue-700 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
                 <>
@@ -299,4 +312,3 @@ const SignUp = () => {
 };
 
 export default SignUp;
-

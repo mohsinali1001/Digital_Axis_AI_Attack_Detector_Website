@@ -1,36 +1,57 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LogIn, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import AuthLayout from "./AuthLayout";
 import PageHead from "../PageHead/PageHead";
+import API from "../../api/api";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (error) setError(""); // Clear error when user types
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
+    setError("");
+
+    try {
+      const res = await API.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Store token and user info in localStorage
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("isAuthenticated", "true");
+        if (res.data.user?.id) {
+          localStorage.setItem("userId", res.data.user.id.toString());
+        }
+      }
+
+      // Navigate to dashboard after successful login
+      navigate("/dashboard/overview");
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed. Please try again.");
+      console.error(err);
+    } finally {
       setIsLoading(false);
-      // Navigate to dashboard or home after successful login
-      // navigate("/dashboard");
-      console.log("Login attempt:", formData);
-    }, 1000);
+    }
   };
 
   const containerVariants = {
@@ -62,9 +83,23 @@ const Login = () => {
           onSubmit={handleSubmit}
           className="space-y-6"
         >
+          {/* Error Message */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
+
           {/* Email Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -89,7 +124,10 @@ const Login = () => {
 
           {/* Password Field */}
           <motion.div variants={itemVariants}>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-300 mb-2"
+            >
               Password
             </label>
             <div className="relative">
@@ -120,7 +158,10 @@ const Login = () => {
           </motion.div>
 
           {/* Remember Me & Forgot Password */}
-          <motion.div variants={itemVariants} className="flex items-center justify-between">
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center justify-between"
+          >
             <div className="flex items-center">
               <input
                 id="remember-me"
@@ -128,7 +169,10 @@ const Login = () => {
                 type="checkbox"
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-700 rounded bg-gray-800"
               />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-300">
+              <label
+                htmlFor="remember-me"
+                className="ml-2 block text-sm text-gray-300"
+              >
                 Remember me
               </label>
             </div>
@@ -183,4 +227,3 @@ const Login = () => {
 };
 
 export default Login;
-
